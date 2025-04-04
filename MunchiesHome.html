@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Munchies - Home</title>
+    <link rel="stylesheet" href="styles.css">
+    
+</head>
+<body>
+    <header>
+        <h1>Welcome to Munchies</h1>
+        <p>Your Ultimate Recipe Collection</p>
+    </header>
+    
+    <nav>
+        <a href="MunchiesHome.html" class="active">Home</a>
+        <a href="MunchiesLogin.php">Login</a>
+        <a href="signup.php">Sign Up</a>
+    </nav>
+    
+    <div class="content">
+        <section class="hero">
+            <h2>Discover Delicious Recipes</h2>
+            <p>At Munchies, we bring you a world of flavors with recipes crafted for every palate. From hearty entrees to sweet treats, explore our collection and find your next culinary inspiration.</p>
+            <div class="cta-buttons">
+                <a href="MunchiesLogin.php" class="btn">Browse Recipes</a>
+                <a href="MunchiesLogin.php" class="btn">Join Now</a>
+            </div>
+        </section>
+        
+        <section class="features">
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>Share Your Recipes</h3>
+                    <p>Create and share your own recipes with our community. Show off your culinary skills and inspire others.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Save Your Favorites</h3>
+                    <p>Like recipes you enjoy and easily find them later. Build your personal collection of go-to dishes.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Explore Categories</h3>
+                    <p>Browse recipes by category to find exactly what you're looking for, whether it's breakfast, entrees, or desserts.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="featured-recipes">
+            <h2>Featured Recipes</h2>
+            <div id="featured-recipes-container">
+                <p class="loading">Loading featured recipes...</p>
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <div class="footer-container">
+            <p>&copy; 2025 Munchies Food Gallery. All rights reserved.</p>
+            <p>Follow us on:
+                <a href="#">Facebook</a> | 
+                <a href="#">Instagram</a> | 
+                <a href="#">Twitter</a>
+            </p>
+        </div>
+    </footer>
+    
+    <script>
+        // Fetch featured recipes
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('get_featured_recipes.php')
+                .then(response => response.json())
+                .then(data => {
+                    const container = document.getElementById('featured-recipes-container');
+                    
+                    if (data.length > 0) {
+                        container.innerHTML = '';
+                        
+                        const recipeGrid = document.createElement('div');
+                        recipeGrid.className = 'recipe-grid';
+                        
+                        data.forEach(recipe => {
+                            const card = document.createElement('div');
+                            card.className = 'recipe-card';
+                            
+                            let imageHtml = '';
+                            if (recipe.image_path) {
+                                imageHtml = `<img src="${recipe.image_path}" alt="${recipe.title}">`;
+                            } else {
+                                imageHtml = `<div class="no-image">No Image</div>`;
+                            }
+                            
+                            card.innerHTML = `
+                                ${imageHtml}
+                                <h3>${recipe.title}</h3>
+                                <p>${recipe.description}</p>
+                            `;
+                            recipeGrid.appendChild(card);
+                        });
+                        
+                        container.appendChild(recipeGrid);
+                    } else {
+                        container.innerHTML = '<p>No featured recipes available yet.</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching featured recipes:', error);
+                    document.getElementById('featured-recipes-container').innerHTML = 
+                        '<p>Failed to load featured recipes. Please try again later.</p>';
+                });
+        });
+    </script>
+</body>
+</html>
